@@ -23,7 +23,7 @@ jobs:
     uses: ./.github/workflows/macos.yml
 
   create_release:
-    needs: build_release
+    needs: [build_windows, build_linux, build_aarch64_linux, build_macos]
     runs-on: ubuntu-latest
     steps:
       - name: Download artifacts
