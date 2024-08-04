@@ -25,6 +25,7 @@ jobs:
         run: zig build test --summary all
       - name: Build 🔧
         run: |
+          rm -rf build
           mkdir build
           cd build
           zig build-lib ../src/xxhash-ffi.zig -dynamic -OReleaseFast -target aarch64-linux
