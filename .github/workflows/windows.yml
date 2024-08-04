@@ -1,0 +1,35 @@
+name: Build (x86_64-windows)
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: ["*"]
+  workflow_call:
+
+permissions:
+  contents: write
+
+jobs:
+  node:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v4
+      - name: Setup Zig 🛎️
+        uses: mlugg/setup-zig@v1
+        with:
+          version: master
+      - name: Test 🔧
+        shell: bash
+        run: zig build test --summary all
+      - name: Build 🔧
+        run: |
+          mkdir build
+          cd build
+          zig build-lib ../src/xxhash-ffi.zig -dynamic -OReleaseFast -target x86_64-windows
+      - name: Upload Artifact 🚀
+        uses: actions/upload-artifact@v4
+        with:
+          name: x86_64-windows
+          path: build/*

@@ -1,3 +1,4 @@
-zig-cache
+.zig-cache
+.vs
 test/cbench
 test/xxHash

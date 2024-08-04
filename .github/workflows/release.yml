@@ -1,0 +1,60 @@
+# adopted from https://github.com/MihailRis/VoxelEngine-Cpp
+name: Release
+
+on:
+  push:
+    branches: [master]
+
+permissions:
+  contents: write
+
+jobs:
+  build_windows:
+    name: Build x86_64-windows
+    uses: ./.github/workflows/windows.yml
+  build_linux:
+    name: Build x86_64-linux
+    uses: ./.github/workflows/linux.yml
+  build_aarch64_linux:
+    name: Build aarch64-linux
+    uses: ./.github/workflows/aarch64-linux.yml
+  build_macos:
+    name: Build x86_64-macos
+    uses: ./.github/workflows/macos.yml
+
+  create_release:
+    needs: build_release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: xxhash
+      - name: Display structure of downloaded files
+        run: ls -R
+      - name: Install APT packages
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install tar 7zip
+      - name: Compress artifacts
+        shell: bash
+        run: |
+          sudo chmod -R 777 /etc/usr/artifacts/xxhash
+          zip -r x86_64-windows.zip /etc/usr/artifacts/xxhash/x86_64-windows
+          tar -cvJf x86_64-linux.tar.xz /etc/usr/artifacts/xxhash/x86_64-linux
+          tar -cvJf aarch64-linux.tar.xz /etc/usr/artifacts/xxhash/aarch64-linux
+          tar -cvJf x86_64-macos.tar.xz /etc/usr/artifacts/xxhash/x86_64-macos
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag_name: ${{ github.ref }}
+          name: ${{ github.sha }}
+          draft: true
+          prerelease: false
+          files: |
+            x86_64-windows.zip
+            x86_64-linux.tar.xz
+            aarch64-linux.tar.xz
+            x86_64-macos.tar.xz
