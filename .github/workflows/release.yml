@@ -40,11 +40,11 @@ jobs:
       - name: Compress artifacts
         shell: bash
         run: |
-          sudo chmod -R 777 /etc/usr/artifacts/xxhash
-          zip -r x86_64-windows.zip /etc/usr/artifacts/xxhash/x86_64-windows
-          tar -cvJf x86_64-linux.tar.xz /etc/usr/artifacts/xxhash/x86_64-linux
-          tar -cvJf aarch64-linux.tar.xz /etc/usr/artifacts/xxhash/aarch64-linux
-          tar -cvJf x86_64-macos.tar.xz /etc/usr/artifacts/xxhash/x86_64-macos
+          sudo chmod -R 777 ./xxhash
+          zip -r x86_64-windows.zip ./xxhash/x86_64-windows
+          tar -cvJf x86_64-linux.tar.xz ./xxhash/x86_64-linux
+          tar -cvJf aarch64-linux.tar.xz ./xxhash/aarch64-linux
+          tar -cvJf x86_64-macos.tar.xz ./xxhash/x86_64-macos
       - name: Create release
         uses: softprops/action-gh-release@v2
         with:
